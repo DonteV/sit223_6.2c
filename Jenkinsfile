@@ -1,45 +1,55 @@
 pipeline {
     agent any
-    environment {
-        DIRECTORY_PATH = "c:\\codepath"
-        TESTING_ENVIRONMENT = "test-env"
-        PRODUCTION_ENVIRONMENT = "5.1p"
-    }
+    
     stages {
-        stage("Build") {
+        stage('Build') {
+            tools {
+                maven 'Maven'
+            }
             steps {
-                echo "fetch the source code from the directory path specified by the environment variable: $DIRECTORY_PATH"
-                echo "compile the code and generate any necessary artifacts"
+                sh 'mvn clean package'
             }
         }
-        stage("Test") {
+        stage('Unit and Integration Tests') {
+            tools {
+                maven 'Maven'
+            }
             steps {
-                echo "running unit tests..."
-                echo "running integration tests..."
+                sh 'mvn test'
+                sh 'mvn integration-test'
             }
         }
-        stage("Code Quality Check") {
+        stage('Code Analysis') {
             steps {
-                echo "check the quality of the code..."
+                sh 'npm install -g jshint'
+                sh 'jshint src'
             }
         }
-        stage("Deploy") {
+        stage('Security Scan') {
             steps {
-                echo "deploy the application to a testing environment specified by the environment variable: $TESTING_ENVIRONMENT"
+                sh 'npm install -g nsp'
+                sh 'nsp check'
             }
         }
-        stage("Approval") {
+        stage('Deploy to Staging') {
             steps {
-                    script {
-                        echo "awaiting approval..."
-                        sleep(time: 10, unit: "SECONDS")
-                        echo "Approved. Continuing..."
-                }
+                sh 'ssh user@staging-server "mkdir -p /opt/myapp"'
+                sh 'scp target/myapp.war user@staging-server:/opt/myapp'
             }
         }
-        stage("Deploy to Production") {
+        stage('Integration Tests on Staging') {
             steps {
-                echo "deploying code to production environment: $PRODUCTION_ENVIRONMENT"
+                sh 'ssh user@staging-server "java -jar /opt/myapp/myapp.war & sleep 30"'
+                sh 'curl http://staging-server:8080/myapp/test'
+            }
+        }
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh 'ssh user@production-server "mkdir -p /opt/myapp"'
+                sh 'scp target/myapp.war user@production-server:/opt/myapp'
             }
         }
     }

@@ -24,14 +24,14 @@ pipeline
                     emailext attachLog: true,
                     subject: 'Unit and Integration Tests Success',
                     body: 'Unit and Integration Tests are successful.',
-                    to: 'dvelona@protonmail.com'
+                    to: 's222258066@deakin.edu.au'
                 }
                 failure
                 {
                     emailext attachLog: true,
                         subject: 'Unit and Integration Tests Failed',
                         body: 'Unit and Integration Tests failed.',
-                        to: 'dvelona@protonmail.com'
+                        to: 's222258066@deakin.edu.au'
                 }
             }
         }
@@ -57,14 +57,14 @@ pipeline
                     emailext attachLog: true,
                     subject: 'Unit and Integration Tests Success',
                     body: 'Unit and Integration Tests are successful.',
-                    to: 'dvelona@protonmail.com'
+                    to: 's222258066@deakin.edu.au'
                 }
                 failure
                 {
                     emailext attachLog: true,
                         subject: 'Unit and Integration Tests Failed',
                         body: 'Unit and Integration Tests failed.',
-                        to: 'dvelona@protonmail.com'
+                        to: 's222258066@deakin.edu.au'
                 }
             }
         }
@@ -90,14 +90,14 @@ pipeline
                     emailext attachLog: true,
                     subject: 'Integration Tests on Staging Success',
                     body: 'Integration Tests on Staging are successful.',
-                    to: 'dvelona@protonmail.com'
+                    to: 's222258066@deakin.edu.au'
                 }
                 failure
                 {
                     emailext attachLog: true,
                         subject: 'Integration Tests on Staging Failed',
                         body: 'Integration Tests on Staging failed.',
-                        to: 'dvelona@protonmail.com'
+                        to: 's222258066@deakin.edu.au'
                 }
             }
         }

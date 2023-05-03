@@ -1,6 +1,12 @@
 pipeline {
     agent any
-    
+    environment
+    {
+        AUTOMATION_TOOL = "Maven"
+        DIRECTORY_PATH = "B:/jenkins/home"
+        TESTING_ENVIRONMENT = "TEST"
+        PRODUCTION_ENVIRONMENT = "AWS EC2"
+    }
     stages {
         stage('Build') {
             tools {

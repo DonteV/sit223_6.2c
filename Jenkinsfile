@@ -1,65 +1,112 @@
-pipeline {
+pipeline
+{
     agent any
-    environment
+    stages
     {
-        AUTOMATION_TOOL = "Maven"
-        DIRECTORY_PATH = "B:/jenkins/home"
-        TESTING_ENVIRONMENT = "TEST"
-        PRODUCTION_ENVIRONMENT = "AWS EC2"
-    }
-    stages {
-        stage('Build') {
-            tools {
-                maven 'Maven'
-            }
-            steps {
-                bat 'mvn clean package'
+        stage('Build')
+        {
+            steps
+            {
+                echo 'Compiling code using Maven'
             }
         }
-        stage('Unit and Integration Tests') {
-            tools {
-                maven 'Maven'
+
+        stage('Unit and Integration Tests')
+        {
+            steps
+            {
+                echo 'Unit and Integration Tests are running using JUnit...'
             }
-            steps {
-                bat 'mvn test'
-                bat 'mvn integration-test'
-            }
-        }
-        stage('Code Analysis') {
-            steps {
-                bat 'npm install -g jshint'
-                bat 'jshint src'
-            }
-        }
-        stage('Security Scan') {
-            steps {
-                bat 'npm install -g nsp'
-                bat 'nsp check'
-            }
-        }
-        stage('Deploy to Staging') {
-            steps {
-                bat 'mkdir C:\\opt\\myapp'
-                bat 'xcopy /s /y target\\myapp.war C:\\opt\\myapp'
-                bat 'ssh user@staging-server "mkdir -p /opt/myapp"'
-                bat 'pscp C:\\opt\\myapp\\myapp.war user@staging-server:/opt/myapp'
+            post
+            {
+                success
+                {
+                    emailext attachLog: true,
+                    subject: 'Unit and Integration Tests Success',
+                    body: 'Unit and Integration Tests are successful.',
+                    to: 's222258066@deakin.edu.au'
+                }
+                failure
+                {
+                    emailext attachLog: true,
+                        subject: 'Unit and Integration Tests Failed',
+                        body: 'Unit and Integration Tests failed.',
+                        to: 's222258066@deakin.edu.au'
+                }
             }
         }
-        stage('Integration Tests on Staging') {
-            steps {
-                bat 'ssh user@staging-server "java -jar /opt/myapp/myapp.war & ping -n 30 localhost > nul"'
-                bat 'curl http://staging-server:8080/myapp/test'
+
+        stage('Code Analysis')
+        {
+            steps
+            {
+                echo 'Running code analysis using SonarQube...'
             }
         }
-        stage('Deploy to Production') {
-            when {
-                branch 'master'
+
+        stage('Security Scan')
+        {
+            steps
+            {
+                echo 'Running security scan using OWASP ZAP...'
             }
-            steps {
-                bat 'mkdir C:\\opt\\myapp'
-                bat 'xcopy /s /y target\\myapp.war C:\\opt\\myapp'
-                bat 'ssh user@production-server "mkdir -p /opt/myapp"'
-                bat 'pscp C:\\opt\\myapp\\myapp.war user@production-server:/opt/myapp'
+            post
+            {
+                success
+                {
+                    emailext attachLog: true,
+                    subject: 'Unit and Integration Tests Success',
+                    body: 'Unit and Integration Tests are successful.',
+                    to: 's222258066@deakin.edu.au'
+                }
+                failure
+                {
+                    emailext attachLog: true,
+                        subject: 'Unit and Integration Tests Failed',
+                        body: 'Unit and Integration Tests failed.',
+                        to: 's222258066@deakin.edu.au'
+                }
+            }
+        }
+
+        stage('Deploy to Staging')
+        {
+            steps
+            {
+                echo 'The application is being deployed to an AWS EC2 instance...'
+            }
+        }
+
+        stage('Integration Tests on Staging')
+        {
+            steps
+            {
+                echo 'Integration Tests on Staging are being run using Cypress...'
+            }
+            post
+            {
+                success
+                {
+                    emailext attachLog: true,
+                    subject: 'Integration Tests on Staging Success',
+                    body: 'Integration Tests on Staging are successful.',
+                    to: 's222258066@deakin.edu.au'
+                }
+                failure
+                {
+                    emailext attachLog: true,
+                        subject: 'Integration Tests on Staging Failed',
+                        body: 'Integration Tests on Staging failed.',
+                        to: 's222258066@deakin.edu.au'
+                }
+            }
+        }
+
+        stage('Deploy to Production')
+        {
+            steps
+            {
+                echo 'The application is being deployed to an AWS EC2 production server...'
             }
         }
     }

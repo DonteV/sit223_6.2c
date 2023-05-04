@@ -55,15 +55,15 @@ pipeline
                 success
                 {
                     emailext attachLog: true,
-                    subject: 'Unit and Integration Tests Success',
-                    body: 'Unit and Integration Tests are successful.',
+                    subject: 'Security Scan Tests Success',
+                    body: 'Security Scan are successful.',
                     to: 'task62c@gmail.com'
                 }
                 failure
                 {
                     emailext attachLog: true,
-                        subject: 'Unit and Integration Tests Failed',
-                        body: 'Unit and Integration Tests failed.',
+                        subject: 'Security Scans Failed',
+                        body: 'Security Scans failed.',
                         to: 'task62c@gmail.com'
                 }
             }
